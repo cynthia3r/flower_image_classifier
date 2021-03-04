@@ -3,7 +3,7 @@ from torchvision import models
 
 import time
 '''
-Functions and classes related to training model
+Functions related to training model
 '''
 
 
@@ -81,7 +81,8 @@ def train_model(model, trainloader, validloader, criterion, num_epochs, optimize
     # TODO COMPLETED: Build and train your network
     # Training the network (The parameters of the feedforward classifier are appropriately trained,
     # while the parameters of the feature network are left static)
-
+    steps = 0
+    batch_size = 16
     train_losses, valid_losses = [], []
 
     model.to(device)
@@ -93,6 +94,7 @@ def train_model(model, trainloader, validloader, criterion, num_epochs, optimize
         for images, labels in trainloader:
             # Move input and label tensors to the default device
             images, labels = images.to(device), labels.to(device)
+            steps += 1
 
             # Clear the gradients, do this because gradients are accumulated
             optimizer.zero_grad()
@@ -107,30 +109,32 @@ def train_model(model, trainloader, validloader, criterion, num_epochs, optimize
 
             running_loss += loss.item()
 
-        else:
-            # Validate model
-            valid_loss = 0
-            accuracy = 0
+            if steps % batch_size == 0:
+                # Validate model
+                valid_loss = 0
+                accuracy = 0
 
-            # set model to evaluation mode for predictions
-            model.eval()
+                # set model to evaluation mode for predictions
+                model.eval()
 
-            # Turn off gradients for validation, saves memory and computations
-            with torch.no_grad():
-                valid_loss, accuracy = validate_model(model, validloader, criterion, device)
+                # Turn off gradients for validation, saves memory and computations
+                with torch.no_grad():
+                    valid_loss, accuracy = validate_model(model, validloader, criterion, device)
 
-            train_losses.append(running_loss / len(trainloader))
-            valid_losses.append(valid_loss / len(validloader))
+                train_losses.append(running_loss / len(trainloader))
+                valid_losses.append(valid_loss / len(validloader))
 
-            # Training validation log: The training loss, validation loss, and
-            # validation accuracy are printed out as a network trains
-            print("Epoch: {}/{}.. ".format(epoch + 1, num_epochs),
-                  "Training Loss: {:.3f}.. ".format(train_losses[-1]),
-                  "Validation Loss: {:.3f}.. ".format(valid_losses[-1]),
-                  "Validation Accuracy: {:.3f}%".format((100 * accuracy) / len(validloader)))
+                # Training validation log: The training loss, validation loss, and
+                # validation accuracy are printed out as a network trains
+                print("Epoch: {}/{}.. ".format(epoch + 1, num_epochs),
+                      "Training Loss: {:.3f}.. ".format(train_losses[-1]),
+                      "Validation Loss: {:.3f}.. ".format(valid_losses[-1]),
+                      "Validation Accuracy: {:.3f}%".format((100 * accuracy) / len(validloader)))
 
-            # set model back to train mode
-            model.train()
+                running_loss = 0
+
+                # set model back to train mode
+                model.train()
 
         # Calculate and print Epoch duration
         epoch_time_elapsed = time.time() - epoch_start_time

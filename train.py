@@ -21,7 +21,7 @@ parser.add_argument('--data_dir', type=str, default='flowers',
 parser.add_argument('--save_dir', type=str, default='checkpoint.pth',
                         help='set path of the model checkpoint (default=checkpoint.pth)')
 
-parser.add_argument('--arch', type=str, default='vgg16',
+parser.add_argument('--arch', type=str, default='vgg16', choices=['vgg16', 'densenet121'],
                     help='Choose cnn model architecture either vgg16 or densenet121 (default=vgg16')
 
 parser.add_argument('--category_names', type=str, default='cat_to_name.json',
@@ -39,7 +39,7 @@ parser.add_argument('--dropout', type=float, default=0.03,
 parser.add_argument('--epochs', type=int, default=3,
                         help='set number of epochs (default=3')
 
-parser.add_argument('--device', type=str, default='cuda',
+parser.add_argument('--device', type=str, default='cuda', choices=['cuda', 'cpu'],
                         help='set device mode cuda or cpu (default=cuda)')
 
 # Retrieving command line argument options

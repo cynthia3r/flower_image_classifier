@@ -1,6 +1,6 @@
 # AI Programming with Python Final Project (Create Your Own Flower Image Classifier)
 
-The project involves two parts, developing code for an image classifier using PyTorch and then conversion of the code into a command line Python application. VGG16 neural network model has been used for this project.
+The project involves two parts, developing code for an image classifier using PyTorch and then conversion of the code into a command line Python application. vgg16 and densenet121 neural network model have been used for this project.
 
 ## Part 1 - Development of an Image Classifier with Deep Learning 
 

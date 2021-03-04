@@ -34,7 +34,7 @@ Run the Jupyter notebook in GPU enabled mode to build the model and use it for p
 Now that the deep neural network model is built and trained on the flower data set, it's time to convert it into an application so that others can use it for prediction. The built application is a pair of Python scripts that run from the command line. For testing, the model checkpoint will be used that has been generated and saved in the first part of the project.
 
 ### Specifications
-The project submission includes two files train.py and predict.py. The first file, train.py, trains a new network on a dataset and save the model as a checkpoint. The second file, predict.py, uses a trained network to predict the class for an input image. A separate file has been created for functions and classes relating to the model and another one for utility functions like loading data and preprocessing images.
+The project submission includes two files train.py and predict.py. The first file, train.py, trains a new network on a dataset and save the model as a checkpoint. The second file, predict.py, uses a trained network to predict the class for an input image. A separate file ```model.py``` has been created for functions and classes relating to the model and another file ```utility.py``` for utility functions like loading data and preprocessing images.
 
 ### Steps involved
 1) Training a network: train.py successfully trains a new network on a dataset of images and saves the model to a checkpoint
@@ -50,20 +50,22 @@ The project submission includes two files train.py and predict.py. The first 
 ### Usage
 1. Train
 Train a new network on a data set with ```train.py```
-    - Basic usage: ```python train.py data_directory```
+    - Basic usage: ```python train.py --data_dir data_directory```
     - Prints out training loss, validation loss, and validation accuracy as the network trains
     - Options:
-        - Set directory to save checkpoints: ```python train.py data_dir --save_dir save_directory```
-        - Choose architecture: ```python train.py data_dir --arch "vgg13"```
-        - Set hyperparameters: ```python train.py data_dir --learning_rate 0.01 --hidden_units 512 --epochs 20```
-        - Use GPU for training: ```python train.py data_dir –gpu```
+        - Set directory to save checkpoints: ```python train.py --data_dir data_directory --save_dir save_directory```
+        - Choose architecture: ```python train.py --data_dir data_directory --arch "vgg16"```
+        - Set hyperparameters: ```python train.py --data_dir data_directory --learning_rate 0.01 --hidden_units 512 --epochs 20```
+        - Use GPU for training: ```python train.py --data_dir data_directory --device cuda```
+        - Sample command: ```python train.py --data_dir flowers --save_dir checkpoint.pth --arch vgg16 --learning_rate 0.005 --hidden_units 512 --dropout 0.05 --epochs 4```
 2. Predict
 Predict flower name from an image with predict.py along with the probability of that name. That is, you'll pass in a single image /path/to/image and return the flower name and class probability.
-    - Basic usage: ```python predict.py /path/to/image checkpoint```
+    - Basic usage: ```python predict.py --image_dir /path/to/image --model_input checkpoint```
     - Options:
-        - Return top K most likely classes: ```python predict.py input checkpoint --top_k 3```
-        - Use a mapping of categories to real names: ```python predict.py input checkpoint --category_names cat_to_name.json```
-        - Use GPU for inference: ```python predict.py input checkpoint --gpu```
+        - Return top K most likely classes: ```python predict.py --image_dir /path/to/image --model_input checkpoint --top_k 3```
+        - Use a mapping of categories to real names: ```python predict.py --image_dir /path/to/image --model_input checkpoint --category_names cat_to_name.json```
+        - Use GPU for inference: ```python predict.py --image_dir /path/to/image --model_input checkpoint --device cuda```
+        -Sample command: ```python predict.py --image_dir ./flowers/test/74/image_01191.jpg --model_input checkpoint.pth --top_k 3 --category_names cat_to_name.json --device cuda```
         
 	Note: argparse module in the python standard library has been used to get the command line input into the scripts.
 

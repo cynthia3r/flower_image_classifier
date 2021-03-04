@@ -65,7 +65,7 @@ Predict flower name from an image with predict.py along with the probability o
         - Return top K most likely classes: ```python predict.py --image_dir /path/to/image --model_input checkpoint --top_k 3```
         - Use a mapping of categories to real names: ```python predict.py --image_dir /path/to/image --model_input checkpoint --category_names cat_to_name.json```
         - Use GPU for inference: ```python predict.py --image_dir /path/to/image --model_input checkpoint --device cuda```
-        -Sample command: ```python predict.py --image_dir ./flowers/test/74/image_01191.jpg --model_input checkpoint.pth --top_k 3 --category_names cat_to_name.json --device cuda```
+        - Sample command: ```python predict.py --image_dir ./flowers/test/74/image_01191.jpg --model_input checkpoint.pth --top_k 3 --category_names cat_to_name.json --device cuda```
         
 	Note: argparse module in the python standard library has been used to get the command line input into the scripts.
 

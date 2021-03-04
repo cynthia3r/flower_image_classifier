@@ -37,8 +37,8 @@ def load_transform_data(data_dir):
     # TODO COMPLETED: Using the image datasets and the trainforms, define the dataloaders
     # Data batching (The data for each set is loaded with torchvision's DataLoader)
     trainloader = torch.utils.data.DataLoader(train_data, batch_size=64, shuffle=True)
-    testloader = torch.utils.data.DataLoader(test_data, batch_size=64, shuffle=True)
-    validloader = torch.utils.data.DataLoader(valid_data, batch_size=64, shuffle=True)
+    testloader = torch.utils.data.DataLoader(test_data, batch_size=64)
+    validloader = torch.utils.data.DataLoader(valid_data, batch_size=64)
 
     return train_data, test_data, valid_data, trainloader, testloader, validloader
 

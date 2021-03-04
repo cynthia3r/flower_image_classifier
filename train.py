@@ -67,10 +67,10 @@ category_names = results.category_names
 with open(category_names, 'r') as f:
     cat_to_name = json.load(f)
 
-# Calculate the label count
-output_layer_label_count = len(cat_to_name)
-
 train_data, test_data, valid_data, trainloader, testloader, validloader = load_transform_data(data_dir)
+
+# Calculate the label count
+output_layer_label_count = len(train_data.class_to_idx)
 
 # Model architecture: The training script allows users to choose from
 # least two different architectures available from torchvision.models

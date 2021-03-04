@@ -23,7 +23,7 @@ parser.add_argument('--top_k', type=int, default=5,
 parser.add_argument('--category_names', type=str, default='cat_to_name.json',
                         help='set file for mapping of flower categories to category names (default=cat_to_name.json)')
 
-parser.add_argument('--device', type=str, default='cuda',
+parser.add_argument('--device', type=str, default='cuda', choices=['cuda', 'cpu'],
                         help='set device mode cuda or cpu (default=cuda)')
 
 results = parser.parse_args()

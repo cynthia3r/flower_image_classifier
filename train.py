@@ -1,4 +1,5 @@
 import argparse
+import json
 
 import torch
 from torch import nn, optim
@@ -23,6 +24,9 @@ parser.add_argument('--save_dir', type=str, default='checkpoint.pth',
 parser.add_argument('--arch', type=str, default='vgg16',
                     help='Choose cnn model architecture either vgg16 or densenet121 (default=vgg16')
 
+parser.add_argument('--category_names', type=str, default='cat_to_name.json',
+                        help='set file for mapping of flower categories to category names (default=cat_to_name.json)')
+
 parser.add_argument('--learning_rate', type=float, default=0.003,
                         help='set learning rate (default=0.003')
 
@@ -43,12 +47,28 @@ results = parser.parse_args()
 
 data_dir = results.data_dir
 save_dir = results.save_dir
-arch = results.arch
+
 learning_rate = results.learning_rate
 hidden_units = results.hidden_units
 drop_out_probability = results.dropout
 num_epochs = results.epochs
-device = results.device
+
+if results.device == 'cuda' and torch.cuda.is_available():
+    device = torch.device('cuda')
+    print('CUDA GPU mode is enabled now')
+elif results.device == 'cpu':
+    device = torch.device('cpu')
+    print('CPU mode is enabled now')
+else:
+    print('CUDA GPU is not supported on this system so switching to CPU mode')
+    device = torch.device('cpu')
+
+category_names = results.category_names
+with open(category_names, 'r') as f:
+    cat_to_name = json.load(f)
+
+# Calculate the label count
+output_layer_label_count = len(cat_to_name)
 
 train_data, test_data, valid_data, trainloader, testloader, validloader = load_transform_data(data_dir)
 
@@ -56,25 +76,23 @@ train_data, test_data, valid_data, trainloader, testloader, validloader = load_t
 # least two different architectures available from torchvision.models
 # Model hyperparameters: The training script allows users to set hyperparameters for learning rate, number of hidden units
 # A new feedforward network is defined for use as a classifier using the features as input
+arch = results.arch
 if arch == 'vgg16':
     model = models.vgg16(pretrained=True)
     classifier = nn.Sequential(OrderedDict([
                           ('fc1', nn.Linear(25088, hidden_units)),
                           ('relu', nn.ReLU()),
                           ('dropout', nn.Dropout(drop_out_probability)),
-                          ('fc2', nn.Linear(hidden_units, 102)),
+                          ('fc2', nn.Linear(hidden_units, output_layer_label_count)),
                           ('output', nn.LogSoftmax(dim=1))
                           ]))
 elif arch == 'densenet121':
     model = models.densenet121(pretrained=True)
     classifier = nn.Sequential(OrderedDict([
-                          ('fc1', nn.Linear(1024, 4096)),
+                          ('fc1', nn.Linear(1024, hidden_units)),
                           ('relu', nn.ReLU()),
                           ('dropout', nn.Dropout(drop_out_probability)),
-                          ('fc2', nn.Linear(4096, hidden_units)),
-                          ('relu', nn.ReLU()),
-                          ('dropout', nn.Dropout(drop_out_probability)),
-                          ('fc3', nn.Linear(hidden_units, 102)),
+                          ('fc2', nn.Linear(hidden_units, output_layer_label_count)),
                           ('output', nn.LogSoftmax(dim=1))
                           ]))
 
